@@ -1,0 +1,12 @@
+---
+title: "Team"
+---
+
+# Project Title: Yelp Business Reviews Analysis
+
+# Team members
+
+- dp1351 - Devanshi Patel
+- nb943 - Nikita Shashikant Bedekar 
+- sb2499 - Sneh Bhandari 
+- tm1014 - Tanvi Mahajan 

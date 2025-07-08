@@ -4,17 +4,17 @@ title: "1: Data Sources"
 
 * * *
 
-Yelp is a prominent platform where users share reviews and opinions about businesses ranging from restaurants to salons. This data wrangling project delves into the information provided by Yelp, obtained directly from the official Yelp website. The dataset, available for public use, is a comprises JSON files meticulously structured to encapsulate diverse aspects of businesses and customer reviews. 
+Yelp is a prominent platform where users share reviews and opinions about businesses ranging from restaurants to salons. This project delves into the information provided by Yelp, obtained directly from the official Yelp website. The dataset, available for public use, comprises JSON files meticulously structured to encapsulate diverse aspects of businesses and customer reviews. 
 
 
-The dataset, sourced from [Yelp's official dataset repository](https://www.yelp.com/dataset), encompasses five JSON files, each offering unique dimensions of analysis. For this project, we focus on two pivotal files: Business and Reviews. Each file consists of a single object type, with one JSON object per line. 
+The dataset, sourced from [Yelp's official dataset repository](https://www.yelp.com/dataset), encompasses five JSON files, each offering unique dimensions of analysis. For this project, I focused on two pivotal files: Business and Reviews. Each file consists of a single object type, with one JSON object per line. 
 
 
 The business file consists of the following attributes: business_id, name, address, city, state, postal code, latitude, longitude, stars, review_count, is_open, attributes, categories, hours. Reviews consists of the following attributes: review_id, user_id, business_id, stars, date, text, useful, funny, cool.
 
 
-Our initial exploration revealed that the Business dataset consists of approximately 1 million rows of data and the Reviews dataset presents an extensive compilation of almost 70 million reviews. Given the substantial size of the dataset, we have opted to streamline our efforts by selecting a subset focused on businesses spanning four distinct states which are Indiana (IN), Florida (FL), Tennessee (TN) and Pennsylvania
+The initial exploration revealed that the Business dataset consists of approximately 1 million rows of data and the Reviews dataset presents an extensive compilation of almost 70 million reviews. Given the substantial size of the dataset, I have opted to streamline our efforts by selecting a subset focused on businesses spanning four distinct states which are Indiana (IN), Florida (FL), Tennessee (TN) and Pennsylvania
 (PA). This strategic decision enables us to maintain a manageable dataset size while preserving the richness and diversity of the Yelp ecosystem.
 
 
-We start with cleaning and preparing the data, paving the way for comprehensive analysis and exploration of the Yelp dataset. We aim to extract actionable insights, unveil patterns, and empower informed decision-making processes. 
+I start with cleaning and preparing the data, paving the way for comprehensive analysis and exploration of the Yelp dataset. I aim to extract actionable insights, unveil patterns, and empower informed decision-making processes. 

@@ -1,0 +1,34 @@
+---
+title: '8: External services'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+
+
+As ensuring accessibility and security of the dataset is paramount we opted to store the CSV files on Amazon S3 (Simple Storage Service), a highly reliable and scalable cloud storage solution. By leveraging Amazon S3, the dataset becomes readily accessible to all project stakeholders, irrespective of their geographical location or organizational role. Amazon S3 provides robust data durability, ensuring that the files remain intact and accessible over time. Moreover, its built-in versioning capabilities allow for easy tracking of changes and retrieval of previous versions if necessary. Additionally, Amazon S3 offers configurable access controls, enabling the project team to manage permissions and restrict access to authorized users only, safeguarding the integrity and confidentiality of the data. Overall, utilizing Amazon S3 for storing the raw and tidied data underscores the project's commitment to data accessibility, reliability, and security.
+
+The dataset can be accessed using the following code:
+
+```{python}
+import boto3
+import io
+import pandas as pd
+
+# Import data files from S3 bucket into dataframe
+s3c = boto3.client('s3', region_name="us-east-2",aws_access_key_id="AKIAQ3EGRIQMCS55ACH2",aws_secret_access_key="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")
+obj = s3c.get_object(Bucket="yelpdataset14",Key="yelp_data.csv")
+df = pd.read_csv(io.BytesIO(obj["Body"].read()))
+```
+
+![Dataset on Amazon S3](img/s3.jpeg)

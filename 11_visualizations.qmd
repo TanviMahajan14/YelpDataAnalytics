@@ -1,0 +1,245 @@
+---
+title: '11: Visualizations'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import json
+import os
+import re
+import matplotlib.pyplot as plt
+import seaborn as sns
+import io
+import boto3
+```
+
+```{python}
+s3c = boto3.client('s3', region_name="us-east-2",aws_access_key_id="AKIAQ3EGRIQMCS55ACH2",aws_secret_access_key="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")
+obj = s3c.get_object(Bucket="yelpdataset14",Key="yelp_data.csv")
+```
+
+```{python}
+business = pd.read_csv(io.BytesIO(obj["Body"].read()))
+business.head()
+```
+
+```{python}
+s3c = boto3.client('s3', region_name="us-east-2",aws_access_key_id="AKIAQ3EGRIQMCS55ACH2",aws_secret_access_key="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")
+obj = s3c.get_object(Bucket="yelpdataset14",Key="fourStates_review.csv")
+```
+
+```{python}
+reviews = pd.read_csv(io.BytesIO(obj["Body"].read()))
+reviews.head()
+```
+
+```{python}
+reviews.info()
+```
+
+```{python}
+business.info()
+```
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+business['year'] = pd.to_datetime(business['date']).dt.year
+states_of_interest = ['PA', 'FL', 'IN', 'TN']
+filtered_df = business[business['state'].isin(states_of_interest)]
+grouped_df = filtered_df.groupby(['state', 'year'])['stars_x'].mean().unstack(level=0)
+plt.figure(figsize=(10, 6))
+for state in states_of_interest:
+    plt.plot(grouped_df.index, grouped_df[state], label=state)
+plt.title('Average Rating of Businesses in PA, FL, IN, and TN')
+plt.xlabel('Year')
+plt.ylabel('Average Rating')
+plt.legend(title='State')
+plt.xticks(grouped_df.index, rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+We can see a discernible trend emerges: from 2005 to 2009, Pennsylvania (PA), Indiana (IN), and Tennessee (TN) 
+experience a decline in ratings, while Florida (FL) witnesses an increase until 2009, followed by a period of 
+relative stability. Subsequently, from 2009 to 2022, the average rating for all four states converges around 3.75
+with minor fluctuations.
+
+```{python}
+x=business['stars_x'].value_counts()
+x=x.sort_index()
+
+plt.figure(figsize=(8,4))
+ax= sns.barplot(x=x.index, y=x.values, alpha=0.8)
+plt.title("Star Rating Distribution")
+plt.ylabel('# of businesses', fontsize=12)
+plt.xlabel('Star Ratings ', fontsize=12)
+
+rects = ax.patches
+labels = x.values
+for rect, label in zip(rects, labels):
+    height = rect.get_height()
+    ax.text(rect.get_x() + rect.get_width()/2, height + 5, label, ha='center', va='bottom')
+
+plt.show()
+```
+
+As we can see from the plot above, majority of businesses have a 5-star rating.
+
+```{python}
+#5 star businesses
+cat1 = ';'.join(business['categories'])
+cat2 = re.split(';|,', cat1)
+bus_cat_trim = [item.lstrip() for item in cat2]
+df_bus_cat = pd.DataFrame(bus_cat_trim,columns=['category'])
+```
+
+```{python}
+#Top business categories
+bus_cat_count = df_bus_cat.category.value_counts()
+bus_cat_count = bus_cat_count.sort_values(ascending = False)
+bus_cat_count = bus_cat_count.iloc[0:10]
+
+fig = plt.figure(figsize=(10, 6))
+ax = sns.barplot(x=bus_cat_count.index, y=bus_cat_count.values)
+plt.title("Top Business Categories",fontsize = 20)
+x_locs,x_labels = plt.xticks()
+plt.setp(x_labels, rotation = 60)
+plt.ylabel('Number of Businesses', fontsize = 12)
+plt.xlabel('Category', fontsize = 12)
+r = ax.patches
+labels = bus_cat_count.values
+for rect, label in zip(r, labels):
+    height = rect.get_height()
+    ax.text(rect.get_x() + rect.get_width()/2, height + 10, label, ha='center', va='bottom')
+```
+
+We can see that the "Restaurants" category claims the foremost position in terms of business quantity 
+with "Food" trailing as the second most prominent category, followed by "Nightlife."
+
+```{python}
+df_bus_res = business.loc[[i for i in business['categories'].index if re.search('Restaurants', business['categories'][i])]]
+```
+
+```{python}
+df_bus_res['city_state'] = df_bus_res['city'] + ',' + df_bus_res['state']
+```
+
+```{python}
+city_res_count = df_bus_res.city_state.value_counts()
+city_res_count = city_res_count.sort_values(ascending = False)
+city_res_count = city_res_count.iloc[0:10]
+
+fig = plt.figure(figsize=(10, 6))
+ax = sns.barplot(x=city_res_count.index, y=city_res_count.values)
+plt.title("Top Cities",fontsize = 20)
+x_locs,x_labels = plt.xticks()
+plt.setp(x_labels, rotation = 60)
+plt.ylabel('Number of Restaurants', fontsize = 12)
+plt.xlabel('City,State', fontsize = 12)
+r = ax.patches
+labels = city_res_count.values
+for rect, label in zip(r, labels):
+    height = rect.get_height()
+    ax.text(rect.get_x() + rect.get_width()/2, height + 10, label, ha='center', va='bottom')
+```
+
+We can see Philadelphia, PA, Nashville, TN, and Tampa, FL as the top three cities boasting the highest number of 
+restaurants.
+
+```{python}
+sub_pd = df_bus_res.loc[(df_bus_res.name == 'Pizza Hut') | (df_bus_res.name == 'Domino\'s Pizza')]
+sub_tc = df_bus_res.loc[(df_bus_res.name == 'Taco Bell') | (df_bus_res.name == 'Chipotle Mexican Grill')]
+```
+
+```{python}
+fig = plt.figure(figsize=(8,6))
+sns.boxplot(x = 'name', y = 'stars_x', data = sub_pd)
+plt.title("Rating Comparison: PH vs DP",fontsize = 20)
+plt.ylabel('Stars', fontsize = 12)
+plt.xlabel('Restaurant Name', fontsize = 12);
+```
+
+Domino's Pizza has better ratings than Pizza Hut.
+
+```{python}
+fig = plt.figure(figsize=(8, 6))
+sns.boxplot(x = 'name', y = 'stars_x', data = sub_tc)
+plt.title("Rating Comparison: TB vs CG",fontsize = 20)
+plt.ylabel('Stars', fontsize = 12)
+plt.xlabel('Restaurant Name', fontsize = 12);
+```
+
+Chipotle Mexican Grill has better ratings than Taco Bell.
+
+```{python}
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+fig = plt.figure(figsize=(8, 6))
+ax = sns.violinplot(x='stars_x', y='review_count', data=df_bus_res)
+ax.set_ylim(0, 4000)
+plt.title("Reviews vs Rating", fontsize=20)
+plt.ylabel('Number of Reviews', fontsize=12)
+plt.xlabel('Rating', fontsize=12)
+plt.show()
+```
+
+```{python}
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+selected_cities = ['Tampa', 'Philadelphia', 'Indianapolis','Montgomeryville','Norristown','Zionsville']
+reviews_selected_cities = business[business['city'].isin(selected_cities)]
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='city', y='stars_x', data=reviews_selected_cities)
+plt.title('Boxplot of Review Scores by Selected Cities')
+plt.xlabel('City')
+plt.ylabel('Review Score')
+plt.xticks(rotation=45)
+plt.show() 
+```
+
+Despite their geographical disparity, Philadelphia, Tampa, Indianapolis, Norristown, and Zionsville exhibit an 
+equanimous median rating.
+In contrast, Montgomeryville stands out with a lower median rating, diverging from the consistent ratings 
+observed elsewhere.
+
+```{python}
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+selected_cities = ['Tampa', 'Philadelphia', 'Indianapolis', 'Montgomeryville', 'Norristown', 'Zionsville']
+filtered_business = business[business['city'].isin(selected_cities)]
+review_score_percentage = filtered_business.groupby(['city', 'stars_x']).size().unstack(fill_value=0)
+review_score_percentage = review_score_percentage.div(review_score_percentage.sum(axis=1), axis=0) * 100
+plt.figure(figsize=(12, 8))
+sns.heatmap(review_score_percentage, cmap="YlGnBu", annot=True, fmt=".1f", linewidths=.5)
+for text in plt.gca().texts:
+    text.set_text(text.get_text() + '%')
+
+plt.title('Percentage of Review Scores by City')
+plt.xlabel('Review Score')
+plt.ylabel('City')
+plt.xticks(rotation=45)
+plt.yticks(rotation=0)
+plt.show()
+```
+
+The predominant trend across all locations indicates a prevalence of 5-star ratings, 
+with Mingtomerville being the exception. 
+In Mingtomerville, the distribution diverges, with 35% of reviews garnering both 5-star and 1-star ratings.

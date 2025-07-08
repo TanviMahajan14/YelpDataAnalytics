@@ -1,0 +1,170 @@
+---
+title: '6: Test data quality'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+Assert Statements for Checking Column Presence and Data Types:
+
+We used assert statements in 09_summary_stats.qmd file to verify that all expected columns are present in the DataFrame and that they have the correct data types. For example, if we expect columns like ‘review_id’, ‘business_id’, and ‘stars_x’ to be present with specific data types, we assert that these columns exist and have the expected data types. This ensures that the DataFrame has the necessary structure and data types required for further analysis. If any columns are missing or have incorrect data types, it could indicate issues with the data loading or processing steps.
+
+Assert Statement for Checking Missing Values: Another assert statement is used to check for missing values in the DataFrame. We assert that there are no missing values present in any of the columns. This sanity check ensures that the data is clean and complete, without any missing information that could affect our analysis. If there are missing values, it could lead to incorrect conclusions or errors in downstream analysis.
+
+Assert Statement for Checking Unique Values: Additionally, we have an assert statement to ensure that certain columns contain only unique values. For example, we check if ‘review_id’ column has unique values. This check helps ensure data integrity and prevents duplicate entries, which could skew analysis results or indicate data duplication issues.
+
+These assert statements serve as sanity checks to validate the quality and integrity of the data before proceeding with further analysis or processing steps. They help catch potential issues early in the workflow and ensure that subsequent steps are performed correctly on reliable data.
+
+# Python Code
+
+```{python}
+import pandas as pd
+import io
+import boto3
+
+# Import data files from S3 bucket into dataframe
+
+s3c = boto3.client('s3', region_name="us-east-2",aws_access_key_id="AKIAQ3EGRIQMCS55ACH2",aws_secret_access_key="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")
+obj = s3c.get_object(Bucket="yelpdataset14",Key="yelp_data.csv")
+
+df_data = pd.read_csv(io.BytesIO(obj["Body"].read()))
+df_data.dropna(inplace=True)
+```
+
+```{python}
+# Test to check if all columns are present
+def test_columns_present(df_data):
+    try:
+        expected_columns = [
+            'review_id', 'business_id', 'stars_x', 'date', 'text', 'useful',
+            'funny', 'cool', 'day', 'month', 'year', 'time', 'total_votes',
+            'state', 'stars_y', 'longitude', 'is_open', 'address', 'latitude',
+            'name', 'categories', 'postal_code', 'city', 'review_count',
+            'attribute_count', 'category_count'
+        ]
+        assert all(col in df_data.columns for col in expected_columns), f"Missing columns: {set(expected_columns) - set(df.columns)}"
+    except Exception as e:
+        raise AssertionError(f"Error occurred while testing columns presence: {e}")
+
+# Test to check if specific columns have correct data types
+def test_column_data_types(df_data):
+    try:
+        expected_data_types = {
+            'review_id': object, 'business_id': object , 'stars_x': float, 'date': object,
+            'text': object, 'useful': float, 'funny': float, 'cool': float,
+            'day': float, 'month': float, 'year': float, 'time': object,
+            'total_votes': float, 'state': object, 'stars_y': float,
+            'longitude': float, 'is_open': float, 'address': object,
+            'latitude': float, 'name': object, 'categories': object,
+            'postal_code': float, 'city': object, 'review_count': float,
+            'attribute_count': float, 'category_count': float
+        }
+        for col, dtype in expected_data_types.items():
+            assert df_data[col].dtype == dtype, f"Column '{col}' has incorrect data type: Expected {dtype}, Found {df_data[col].dtype}"
+    except Exception as e:
+        raise AssertionError(f"Error occurred while testing column data types: {e}")
+
+# Test to check if there are any missing values in any column
+def test_missing_values(df_data):
+    try:
+        assert not df_data.isnull().values.any(), "DataFrame contains missing values"
+    except Exception as e:
+        raise AssertionError(f"Error occurred while testing missing values: {e}")
+
+# Test to check if certain columns contain only unique values
+def test_unique_values(df_data):
+    try:
+        columns_to_check_uniqueness = ['review_id', 'business_id']
+        for col in columns_to_check_uniqueness:
+            assert df_data[col].nunique() == len(df[col]), f"Column '{col}' does not contain unique values"
+    except Exception as e:
+        raise AssertionError(f"Error occurred while testing unique values: {e}")
+        
+# Test to ensure that only rows with states 'PA', 'TN', 'FL', and 'IN' are present       
+def test_valid_states(df_data):
+    try:
+        valid_states = ['PA', 'TN', 'FL', 'IN']
+        assert all(df_data['state'].isin(valid_states)), "Incorrect states in the dataframe"
+    except AssertionError as e:
+        raise AssertionError(f"Error occurred while testing valid states: {e}")
+
+# Run the tests
+if __name__ == "__main__":
+    try:
+        test_columns_present(df_data)
+        test_column_data_types(df_data)
+        test_missing_values(df_data)
+        test_missing_values(df_data)
+        test_valid_states(df_data)
+        print("All tests passed successfully!")
+    except AssertionError as e:
+        print(f"Test failed: {e}")
+```
+
+```{python}
+s3c = boto3.client('s3', region_name="us-east-2",aws_access_key_id="AKIAQ3EGRIQMCS55ACH2",aws_secret_access_key="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")
+obj = s3c.get_object(Bucket="yelpdataset14",Key="fourStates_review.csv")
+df_reviews = pd.read_csv(io.BytesIO(obj["Body"].read()))
+
+# Drop null values
+
+df_reviews.dropna(inplace=True)
+```
+
+```{python}
+# Test to check if all columns are present
+def test_columns_present_reviews(df_reviews):
+    try:
+        expected_columns = ['review_id', 'business_id', 'user_id', 'stars', 'date', 'text', 'useful', 'funny', 'cool']
+        assert all(col in df_reviews.columns for col in expected_columns), f"Missing columns: {set(expected_columns) - set(df_reviews.columns)}"
+    except AssertionError as e:
+        raise AssertionError(f"Error occurred while testing columns presence: {e}")
+
+# Test to check if specific columns have correct data types
+def test_column_data_types_reviews(df_reviews):
+    try:
+        expected_data_types = {
+            'review_id': object, 'business_id': object, 'user_id': object, 'stars': float, 'date': object,
+            'text': object, 'useful': float, 'funny': float, 'cool': float
+        }
+        for col, dtype in expected_data_types.items():
+            assert df_reviews[col].dtype == dtype, f"Column '{col}' has incorrect data type: Expected {dtype}, Found {df_reviews[col].dtype}"
+    except AssertionError as e:
+        raise AssertionError(f"Error occurred while testing column data types: {e}")
+
+# Test to check if there are any missing values in any column
+def test_missing_values_reviews(df_reviews):
+    try:
+        missing_columns = df_reviews.columns[df_reviews.isnull().any()].tolist()
+        assert not df_reviews.isnull().values.any(), f"DataFrame contains missing values in columns: {missing_columns}"
+    except AssertionError as e:
+        raise AssertionError(f"Error occurred while testing missing values: {e}")
+
+# Test to check if certain columns contain only unique values
+def test_unique_values_reviews(df_reviews):
+    try:
+        columns_to_check_uniqueness = ['review_id']
+        for col in columns_to_check_uniqueness:
+            assert df_reviews[col].nunique() == len(df_reviews[col]), f"Column '{col}' does not contain unique values"
+    except AssertionError as e:
+        raise AssertionError(f"Error occurred while testing unique values: {e}")
+
+# Run the tests
+if __name__ == "__main__":
+    try:
+        test_columns_present_reviews(df_reviews)
+        test_column_data_types_reviews(df_reviews)
+        test_missing_values_reviews(df_reviews)
+        test_unique_values_reviews(df_reviews)
+        print("All tests passed successfully!")
+    except AssertionError as e:
+        print(f"Test failed: {e}")
+```

@@ -1,0 +1,27 @@
+---
+title: '10: Statistical Analysis'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+
+The project entailed a comprehensive sentiment analysis of reviews. Initially, the raw reviews underwent meticulous preprocessing steps. This involved converting all text to lowercase to ensure consistency, followed by the removal of punctuations, digits/numbers, stop words, and any extraneous spaces. Furthermore, a crucial step of lemmatization was implemented to reduce words to their base forms, enhancing the accuracy of subsequent analyses.
+
+Following the preprocessing phase, both unigram and bigram analyses were conducted to extract meaningful phrases from the reviews. Unigrams represent single words, while bigrams capture two-word combinations, enabling a deeper understanding of the sentiment expressed in the reviews.
+
+Subsequently, sentiment analysis was executed utilizing the Vader sentiment analysis tool. Vader, known for its accuracy in analyzing sentiments expressed in social media texts, was employed to classify the reviews into positive, negative, and neutral sentiments. This analysis provided valuable insights into the overall sentiment polarity of the reviews, aiding in understanding customer opinions and feedback.
+
+To visually represent the sentiment distribution, word clouds were generated for positive, negative, and neutral reviews. These word clouds offered a succinct yet powerful visualization of the most frequently occurring words within each sentiment category, allowing for quick interpretation of the overall sentiment trends. Additionally, to provide a geographical context to the reviews, word clouds were plotted with the shape of each state. This unique approach not only allowed for the visualization of sentiment distribution but also provided insights into regional variations in sentiment expression. By incorporating the geographical data, the analysis could capture nuanced sentiments specific to different regions, contributing to a more comprehensive understanding of customer perceptions and experiences.
+
+The implementation can be found in the [Statistical ML](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/Statistical%20ML.ipynb) notebook. Due to its size, the notebook might not display directly on GitHub. Please use the download option to access and view the notebook .
+

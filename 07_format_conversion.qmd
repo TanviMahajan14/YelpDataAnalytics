@@ -1,0 +1,34 @@
+---
+title: '7: Backup in several formats'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+
+The dataset was stored in three different formats for versatility and accessibility: JSON, XLSX, and SQL.
+
+1. JSON (JavaScript Object Notation): JSON is a lightweight data interchange format commonly used for storing and transmitting structured data between a server and a web application. It offers simplicity, readability, and flexibility, making it ideal for various data storage and exchange scenarios.
+
+![Dataset in JSON](img/img_json.png)
+
+2. XLSX (Excel Spreadsheet): XLSX is a file format used by Microsoft Excel for storing spreadsheets. It supports various data types, formulas, charts, and formatting options, making it suitable for organizing and analyzing tabular data. XLSX files are widely compatible across different platforms and applications, providing ease of use and accessibility.
+
+![Dataset in Excel](img/img_xlsx.png)
+
+
+3. SQL (Structured Query Language) Database: The dataset was also saved in a relational database using SQL, a standard language for managing and querying structured data. SQL databases offer robust data integrity, scalability, and efficient querying capabilities. They provide a structured framework for organizing data into tables, enabling complex relationships and queries to be easily managed and executed. SQL databases are commonly used in applications requiring data consistency, reliability, and performance.
+
+![Dataset in sqlite3](img/sqlite3.png)
+
+
+The implementation can be found in the [Format Conversioon](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/Format%20Conversion.ipynb) notebook.

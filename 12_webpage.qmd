@@ -1,0 +1,23 @@
+---
+title: '12: Webpage'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+We employed the Quarto Publish GitHub Action to facilitate the publication of our website, streamlining the process of generating and deploying it directly from our GitHub repository. This action automates the building of the website from our Quarto files and promptly publishes it online for convenient access. The workflow code can be found [here](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/.github/workflows/publish.yml).
+
+Our website undergoes automatic updates in the below scenario:
+
+Whenever a commit is pushed to the main branch: This mechanism guarantees that any modifications made to the Quarto files or other pertinent content are promptly reflected on the website, ensuring real-time updates.
+
+We have published our website using Quarto at : [Collective_Creators](https://stats-at-rutgers.github.io/group-project-collective_creators/).

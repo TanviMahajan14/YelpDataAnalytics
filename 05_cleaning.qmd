@@ -1,0 +1,20 @@
+---
+title: '5: Data Cleaning'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+
+During the "Data Cleaning" phase of the project, meticulous steps were taken to ensure the dataset's integrity and completeness. Within the "Business" dataframe, columns with over 95% null values were systematically removed, while null entries in 'postal_code' and 'address' were addressed by utilizing geocoding APIs based on latitude and longitude coordinates. Remaining null values were then dropped to maintain data consistency. Additionally, new columns were introduced to capture the total count of amenities and categories for each business, providing enriched insights. The 'date' column underwent parsing to extract day, month, time, and year components for refined temporal analysis. Similarly, in the "Reviews" dataframe, a new column was created to aggregate total votes for each review. Upon merging the dataframes, a left join operation was executed based on the 'business_id', followed by the removal of null entries to ensure dataset cohesion. 
+
+The implementation can be found in the [Yelp_Data Processing](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/Yelp_Data%20Processing.ipynb) notebook.

@@ -1,0 +1,20 @@
+---
+title: '3: From raw to tabular data'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+
+In transitioning from raw data to tabular format, the project employed a structured approach. Initially, due to the voluminous nature of the dataset, the raw JSON data was ingested into an SQL database. Through SQL queries, data specific to the top four states ('PA', 'TN', 'FL', 'IN') was extracted from both datasets. These selected datasets were then transformed into CSV files, facilitating easier management and manipulation. Subsequently, the CSV files were re-imported into Python for further processing, marking the conversion from raw data to tabular form, enabling systematic analysis and exploration.
+
+The notebooks [Insert data into SQL](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/Insert%20data%20into%20SQL.ipynb) and [Extract data (Four states)](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/Extract%20data%20(Four%20states).ipynb) performs the operations described above.

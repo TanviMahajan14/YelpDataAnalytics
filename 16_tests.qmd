@@ -1,0 +1,19 @@
+---
+title: '16: Tests'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+# Data Backup Testing
+
+* * *
+We have incorporated these validation tests into the "Format Conversion.ipynb" file that can be found [here](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/Format%20Conversion.ipynb). . We've added The Python script offers a thorough methodology for verifying the integrity and completeness of data backups, specifically targeting JSON and CSV backups of the Yelp Dataset. This testing procedure is designed to ensure the reliability and completeness of both JSON and CSV backups of Yelp Dataset data. Through methods such as confirming the presence of documents in the JSON files and cross-referencing data between the CSV backups and the original dataset, the script assures the integrity and accuracy of the backup processes.

@@ -1,0 +1,137 @@
+---
+title: '13: Interactive Dashboard'
+author: Collective_Creators
+format: dashboard
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+```{python}
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
+import io
+import boto3
+```
+
+```{python}
+# Import data files from S3 bucket into dataframe
+s3c = boto3.client('s3', region_name="us-east-2",aws_access_key_id="AKIAQ3EGRIQMCS55ACH2",aws_secret_access_key="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")
+obj = s3c.get_object(Bucket="yelpdataset14",Key="yelp_data.csv")
+```
+
+```{python}
+df = pd.read_csv(io.BytesIO(obj["Body"].read()))
+```
+
+## Row {height=60%}
+
+```{python}
+#| title: Number of businesses in each city throughout the years
+# Group data by year and city and count the number of businesses
+business_count = df.groupby(['city', 'year']).size().reset_index(name='count')
+
+# Create line plot for each city
+fig = px.line(business_count, x='year', y='count', color='city', 
+              labels={'count': 'Number of Businesses', 'year': 'Year', 'city': 'City'},
+              title='Number of Businesses in Each City Over the Years')
+
+fig.update_layout(height=600)
+```
+
+```{python}
+#| title: Top 1000 businesses in each state
+# Group data by state
+grouped_data = df.groupby('state')
+
+# Initialize list to store top businesses
+top_businesses = []
+
+# Iterate over groups (states)
+for state, group in grouped_data:
+    # Sort businesses by star_y in descending order
+    sorted_group = group.sort_values(by='stars_y', ascending=False)
+    # Select top 20 businesses for each state
+    top_1000 = sorted_group.head(1000)
+    # Append top 20 businesses to list
+    top_businesses.append(top_1000)
+
+# Concatenate top businesses from all states
+top_businesses_df = pd.concat(top_businesses)
+
+# Create map figure
+fig = px.scatter_mapbox(top_businesses_df, lat='latitude', lon='longitude', hover_name='name', hover_data=['stars_y'],
+                        color='state', size='review_count', 
+                        color_continuous_scale=px.colors.cyclical.IceFire, size_max=50, zoom=5)
+
+fig.update_layout(mapbox_style="open-street-map", title='Top 1000 Businesses in Each State Based on star_y', height=600)
+```
+
+## Row {height=40%}
+
+```{python}
+#| title: Bottom 10 businesses each year based on rating
+# Sort DataFrame by year and stars_y
+df_sorted = df.sort_values(by=['year', 'stars_y'])
+
+# Group by year and get the bottom 10 names for each year
+bottom_10_names_by_year = df_sorted.groupby('year').head(10)
+
+# Plotting the graph
+fig = px.bar(bottom_10_names_by_year, 
+             x='name', 
+             y='stars_y', 
+             title='Bottom 10 Businesses based on Stars each Year', 
+             animation_frame='year', 
+             labels={'stars_y': 'Stars'},
+             range_y=[0, 7])  # Set the range of y-axis to 0-5
+
+fig.update_layout(height=600)
+```
+
+```{python}
+#| title: Correlation plot using plotly
+# Select only numeric columns
+numeric_df = df.select_dtypes(include=np.number)
+
+# Calculate correlation matrix
+correlation_matrix = numeric_df.corr()
+
+# Create Plotly heatmap
+fig = go.Figure(go.Heatmap(
+    z=correlation_matrix.values,
+    x=list(correlation_matrix.columns),
+    y=list(correlation_matrix.index),
+    colorscale='Viridis'
+))
+
+fig.update_layout(
+    title='Correlation Plot (Excluding Categorical Variables)',
+    xaxis=dict(title='Features'),
+    yaxis=dict(title='Features'),
+    height=600
+)
+```
+
+```{python}
+#| title: Box plots
+selected_columns = ['attribute_count', 'category_count']
+selected_df = df[selected_columns]
+
+fig = px.box(selected_df, title='Box Plot of Numeric Variables')
+
+fig.update_layout(height=600)
+```

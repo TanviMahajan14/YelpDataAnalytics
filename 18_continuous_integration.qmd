@@ -1,0 +1,11 @@
+---
+title: "18: Continuous Integration"
+---
+
+<https://bellecp.github.io/597-Data-Wrangling-Spring-2024/project.html#continuous-integration>.
+Describe your contributions below.
+
+* * *
+
+We used the Quarto Publish GitHub Action to publish the website, which made it easier to generate and deploy the page straight from our GitHub repository. Using our Quarto files, this operation immediately creates the website and posts it online for convenient access. The webpage is updated whenever a commit is pushed to the main branch.
+The workflow can be found [here](https://github.com/stats-at-Rutgers/group-project-collective_creators/blob/main/.github/workflows/publish.yml)

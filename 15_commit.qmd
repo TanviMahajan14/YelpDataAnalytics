@@ -1,0 +1,20 @@
+---
+title: '15: Git commit history'
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+* * *
+
+As of now , our project has around 86 commits . Attached is a screenshot displaying commits contributed by all team members.
+
+![Commit_History](img/Commit_History.png)
